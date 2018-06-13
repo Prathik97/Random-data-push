@@ -1,22 +1,40 @@
-import random
-import time
-from datetime import datetime
-
-import requests
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
 from django.apps import AppConfig
-def execute_this():
-    first_names=('a','e','i','o','u')
-    last_names=('b','c','d','f','g','h')
-    start =0
-    while time.clock()-start<10:
-        group = "".join(random.choice(first_names)+""+random.choice(last_names) for _ in range(7))
-        group += str(datetime.now())
-        requests.post('https://messaging-app-d8013.firebaseio.com/messages.json', json={"message": group})
-        print(group)
-        time.sleep(1)
+
+cred = credentials.Certificate("/home/prathik/demo/mysite/firebase/fir-74959-firebase-adminsdk-q68z2-346a2b1238.json")
+firebase_admin.initialize_app(cred)
+
+db = firestore.client()
+
+doc_ref=db.collection(u'data').document(u'one')
+doc_ref.set({
+    u'stringExample': u'Hello, World!',
+    u'booleanExample': True,
+    u'numberExample': 3.14159265,
+    u'arrayExample': [5, True, u'hello'],
+    u'nullExample': None,
+    u'objectExample': {
+        u'a': 5,
+        u'b': True
+    }
+})
+
+doc_ref = db.collection(u'users').document(u'name1')
+doc_ref.set({
+    u'first': u'Prathik',
+    u'last': u'Kumar',
+    u'born': 1997
+    })
+
+doc_ref = db.collection(u'users').document(u'name2')
+doc_ref.set({
+    u'first': u'Rajath',
+    u'last': u'Kumar',
+    u'born': 1998
+    })
+
 
 class FirebaseConfig(AppConfig):
     name = 'firebase'
-
-    def ready(self):
-        execute_this()
